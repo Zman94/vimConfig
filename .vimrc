@@ -11,7 +11,7 @@ Plugin 'scrooloose/syntastic' "In file syntax checking
 Plugin 'scrooloose/nerdcommenter' "Commenting
 Plugin 'scrooloose/nerdtree' "Filesystem
 Plugin 'valloric/youcompleteme' "Code Completion
-Plugin 'YankRing.vim' "Add an Emacs-esq Yank Ring
+Plugin 'vim-scripts/YankRing.vim' "Add an Emacs-esq Yank Ring
 Plugin 'tpope/vim-fugitive' "Git integration
 Plugin 'kien/ctrlp.vim' "File search
 
@@ -29,7 +29,6 @@ Plugin 'hdima/python-syntax' "Python syntax highlighting
 Plugin 'tmhedberg/SimpylFold' "Code folding help
 Plugin 'vim-scripts/indentpython.vim' "Python indents
 Plugin 'nvie/vim-flake8' "Flake8 checker
-
 
 Plugin 'yggdroot/indentline' "Vertical tab lines
 Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'} "Status bar some features may slow
@@ -152,3 +151,7 @@ if has("gui_running")
       set guifont=Inconsolata\ for\ Powerline:h15
    endif
 endif
+
+"CTRLP
+let g:ctrlp_map = '<c-o>'
+let g:ctrlp_cmd = 'CtrlP'
