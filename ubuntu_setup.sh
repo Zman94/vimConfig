@@ -50,3 +50,4 @@ curl -o ~/.git-completion.bash -OL cdn.learnenough.com/git-completion.bash
 git config --global alias.co checkout
 git config --global alias.st status
 git config --global alias.ci commit
+git config --global alias.br branch
