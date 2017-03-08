@@ -63,9 +63,11 @@ map <C-J> <C-W>j
 map <C-K> <C-W>k
 map <C-H> <C-W>h
 map <C-L> <C-W>l
-"Tab movement
-nnoremap <C-Left> :tabprevious<CR>
-nnoremap <C-Right> :tabnext<CR>
+"Buffer movement
+map <Tab> :bnext<CR>
+map <S-Tab> :bprevious<CR>
+"Kill a buffer
+map <C-K> :bp<bar>sp<bar>bn<bar>bd<CR>
 
 set tabstop=4
 set shiftwidth=4
