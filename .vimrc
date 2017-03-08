@@ -66,6 +66,9 @@ map <C-L> <C-W>l
 "Buffer movement
 map <Tab> :bnext<CR>
 map <S-Tab> :bprevious<CR>
+"Tag movement
+map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 set tabstop=4
 set shiftwidth=4
