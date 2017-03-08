@@ -66,8 +66,6 @@ map <C-L> <C-W>l
 "Buffer movement
 map <Tab> :bnext<CR>
 map <S-Tab> :bprevious<CR>
-"Kill a buffer
-map <C-K> :bp<bar>sp<bar>bn<bar>bd<CR>
 
 set tabstop=4
 set shiftwidth=4
