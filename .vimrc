@@ -1,3 +1,4 @@
+" vim:set et sw=2
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
@@ -7,12 +8,14 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'scrooloose/syntastic' "In file syntax checking
+"Plugin 'scrooloose/syntastic' "In file syntax checking
 Plugin 'scrooloose/nerdcommenter' "Commenting
 Plugin 'scrooloose/nerdtree' "Filesystem
 Plugin 'valloric/youcompleteme' "Code Completion
 Plugin 'vim-scripts/YankRing.vim' "Add an Emacs-esq Yank Ring
 Plugin 'tpope/vim-fugitive' "Git integration
+Plugin 'airblade/vim-gitgutter' "Git diff
+
 Plugin 'kien/ctrlp.vim' "File search
 
 Plugin 'fs111/pydoc.vim' "Python pydoc support
@@ -33,6 +36,15 @@ Plugin 'nvie/vim-flake8' "Flake8 checker
 Plugin 'yggdroot/indentline' "Vertical tab lines
 Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'} "Status bar some features may slow
 Plugin 'bling/vim-bufferline' "Buffer line
+
+"Snippits
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+
+"Optional
+Plugin 'honza/vim-snippets'
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -59,16 +71,16 @@ nnoremap <space> za
 nnoremap <C-Left> :tabprevious<CR>
 nnoremap <C-Right> :tabnext<CR>
 "Window Movement
-map <C-J> <C-W>j
-map <C-K> <C-W>k
-map <C-H> <C-W>h
-map <C-L> <C-W>l
+nnoremap <C-J> <C-W>j
+nnoremap <C-K> <C-W>k
+nnoremap <C-H> <C-W>h
+nnoremap <C-L> <C-W>l
 "Buffer movement
-map <Tab> :bnext<CR>
-map <S-Tab> :bprevious<CR>
+nnoremap <Tab> :bnext<CR>
+nnoremap <S-Tab> :bprevious<CR>
 "Tag movement
-map <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
-map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+nnoremap <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+nnoremap <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 set tabstop=4
 set shiftwidth=4
@@ -76,14 +88,20 @@ set nocompatible
 set hlsearch
 set colorcolumn=100
 set number
+let maplocalleader="\\"
 set background=dark
-set clipboard=unnamed
-let g:golden_ratio_autocommand = 0
-let python_highlight_all=1
+nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
+"nnoremap <leader>p :PluginInstall
+nnoremap - :m+1<CR>
+nnoremap _ :m-2<CR>
+inoremap <c-u> <esc>bveU<esc>i
+iabbrev @@ zgleason94@gmail.com
+iabbrev ccop Copyright 2017 Zach Gleason, all rights reservedv
+iabbrev ffor for(int i = 0; i < counter; i++)
 syntax enable
 colorscheme Tomorrow-Night-Eighties
 "colorscheme Zenburn
-
 filetype plugin on
 "autocmd BufNewFile,BufRead *.py set ft=python
 
@@ -141,20 +159,19 @@ EOF
 "Flake8
 autocmd FileType python map <buffer> <C-;> :call Flake8()<CR>
 
-"Powerline
-set guifont=Inconsolata\ for\ Powerline:h13
-let g:Powerline_symbols = 'fancy'
-set encoding=utf-8
-set t_Co=256
-set fillchars+=stl:\ ,stlnc:\
-set termencoding=utf-8
-if has("gui_running")
-   let s:uname = system("uname")
-   if s:uname == "Zach\n"
-      set guifont=Inconsolata\ for\ Powerline:h15
-   endif
-endif
-
 "CTRLP
 let g:ctrlp_map = '<c-o>'
 let g:ctrlp_cmd = 'CtrlP'
+
+"YouCompleteMe
+let g:ycm_server_python_interpreter = 'python'
+set shortmess+=c
+let g:ycm_path_to_python_interpreter = '/usr/bin/python2.7'
+let g:ycm_server_use_vim_stdout = 0
+
+"Mouse
+set mouse=a
+
+"Snippits
+inoremap <expr><CR> neosnippet#expandable() ? neosnippet#mappings#expand_or_jump_impl() : pumvisible() ? neocomplete#close_popup() : "\<CR>"
+
