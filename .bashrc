@@ -1,16 +1,31 @@
+. ~/.kalias
 alias ls="ls --color=always"
-alias xflux="~/Downloads/xflux11 -z 61820 -k 3500 -r 0"
-alias shutdown="sudo shutdown -P now"
+alias subl="sublime3"
+alias zgsal="gsa_login zachg57"
+alias pdf="evince"
+alias rm_docker_container="docker rm $(docker ps -q -f status=exited)"
+alias rm_docker_image="docker rmi $(docker images | grep "^<none>" | awk "{print $3}")"
 alias sleep="systemctl suspend"
+alias volume="alsamixer"
+alias flux="redshift -t 3700:3700"
+alias falcon="ssh zachg57@falcon6.pok.stglabs.ibm.com"
 
+export ZGSA="/gsa/pokgsa/home/z/a/zachg57"
+export ZGSAS="/gsa/pokgsa/projects/z//zachg57/shared"
+export Z1090_MODE="SINGLE"
+
+export PATH=.:$PATH
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+export PATH="$PATH:."
+export PATH=/gsa/pokgsa/home/z/a/zachg57/my_git/Emily/emily/bin.x86_64_RH/:$PATH
+export LD_LIBRARY_PATH=/gsa/pokgsa/home/z/a/zachg57/my_git/Emily/emily/bin.x86_64_RH/:$LD_LIBRARY_PATH
 
 # added by travis gem
 [ -f /Users/Zach/.travis/travis.sh ] && source /Users/Zach/.travis/travis.sh
 
 #####################   .bash_profile   ########################
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.5
+export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3.4
 export WORKON_HOME=~/Envs
 
 
@@ -104,3 +119,13 @@ source /usr/local/bin/virtualenvwrapper.sh
 
 export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
+source ~/.autoenv/activate.sh
+
+####### added for zPDT #######170526112932
+#export PATH=/usr/z1090/bin:$PATH
+#export LD_LIBRARY_PATH=/usr/z1090/bin:$LD_LIBRARY_PATH
+export MANPATH=/usr/z1090/man:$MANPATH
+ulimit -c unlimited
+ulimit -d unlimited
+####### end of added for zPDT #######
+
