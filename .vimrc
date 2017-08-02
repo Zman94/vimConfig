@@ -34,7 +34,6 @@ Plugin 'vim-scripts/indentpython.vim' "Python indents
 Plugin 'nvie/vim-flake8' "Flake8 checker
 
 Plugin 'yggdroot/indentline' "Vertical tab lines
-Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'} "Status bar some features may slow
 Plugin 'bling/vim-bufferline' "Buffer line
 
 "Snippits
@@ -42,8 +41,6 @@ Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 
-"Optional
-Plugin 'honza/vim-snippets'
 
 
 " All of your Plugins must be added before the following line
@@ -82,20 +79,75 @@ nnoremap <S-Tab> :bprevious<CR>
 nnoremap <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 nnoremap <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
+"set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+filetype plugin indent on
+" show existing tab with 4 spaces width
 set tabstop=4
+" when indenting with '>', use 4 spaces width
 set shiftwidth=4
+" On pressing tab, insert 4 spaces
+set expandtab
+
+" New tab
+nnoremap <leader>gn :tabedit<cr>
+nnoremap gn :tab sball<cr>
+
+" Save and quit tab
+nnoremap <leader>wt :w<cr>:bd<cr>
+
+"cscope find callers
+if has("cscope")
+
+    """"""""""""" Standard cscope/vim boilerplate
+
+    " use both cscope and ctag for 'ctrl-]', ':ta', and 'vim -t'
+    set cscopetag
+
+    " check cscope for definition of a symbol before checking ctags: set to 1
+    " if you want the reverse search order.
+    set csto=0
+
+    " show msg when any other cscope db added
+    set cscopeverbose
+
+
+    """"""""""""" My cscope/vim key mappings
+    "
+    " The following maps all invoke one of the following cscope search types:
+    "
+    "   's'   symbol: find all references to the token under cursor
+    "   'g'   global: find global definition(s) of the token under cursor
+    "   'c'   calls:  find all calls to the function name under cursor
+    "   't'   text:   find all instances of the text under cursor
+    "   'e'   egrep:  egrep search for the word under cursor
+    "   'f'   file:   open the filename under cursor
+    "   'i'   includes: find files that include the filename under cursor
+    "   'd'   called: find functions that function under cursor calls
+    "
+
+    nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+    nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+    nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+    nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+endif
+
+set ignorecase
 set nocompatible
 set hlsearch
 set colorcolumn=100
 set number
 let maplocalleader="\\"
 set background=dark
-nnoremap <leader>ev :vsplit $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
-"nnoremap <leader>p :PluginInstall
-nnoremap - :m+1<CR>
-nnoremap _ :m-2<CR>
+nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap = :m+1<CR>
+nnoremap - :m-2<CR>
 inoremap <c-u> <esc>bveU<esc>i
+nnoremap <Leader><C-]> <C-w><C-]><C-w>T
 iabbrev @@ zgleason94@gmail.com
 iabbrev ccop Copyright 2017 Zach Gleason, all rights reservedv
 iabbrev ffor for(int i = 0; i < counter; i++)
@@ -111,16 +163,16 @@ set path+=**
 set wildmenu
 
 "Syntastic
-let g:syntastic_mode_map = {'mode': 'passive', 'active_filetypes': [],'passive_filetypes': []}
+"let g:syntastic_mode_map = {'mode': 'passive', 'active_filetypes': [],'passive_filetypes': []}
 
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
 
 "YouCompleteMe
 let g:ycm_autoclose_preview_window_after_completion=1
@@ -172,6 +224,27 @@ let g:ycm_server_use_vim_stdout = 0
 "Mouse
 set mouse=a
 
-"Snippits
-inoremap <expr><CR> neosnippet#expandable() ? neosnippet#mappings#expand_or_jump_impl() : pumvisible() ? neocomplete#close_popup() : "\<CR>"
+"fugitive git bindings
+nnoremap <leader>ga :Git add %:p<CR><CR>
+nnoremap <leader>gs :Gstatus<CR>
+nnoremap <leader>gc :Gcommit -v -q<CR>
+nnoremap <leader>gt :Gcommit -v -q %:p<CR>
+nnoremap <leader>gd :Gdiff<CR>
+nnoremap <leader>ge :Gedit<CR>
+nnoremap <leader>gr :Gread<CR>
+nnoremap <leader>gw :Gwrite<CR><CR>
+nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
+nnoremap <leader>gp :Ggrep<Space>
+nnoremap <leader>gm :Gmove<Space>
+nnoremap <leader>gb :Git branch<Space>
+nnoremap <leader>go :Git checkout<Space>
+nnoremap <leader>gps :Dispatch! git push<CR>
+nnoremap <leader>gpl :Dispatch! git pull<CR>
+
+"git gutter bindings
+nmap ]h <Plug>GitGutterNextHunk
+nmap [h <Plug>GitGutterPrevHunk
+
+nmap <Leader>ha <Plug>GitGutterStageHunk
+nmap <Leader>hr mz<Plug>GitGutterUndoHunk'z5k5<C-y>
 
