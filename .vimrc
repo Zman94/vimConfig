@@ -9,37 +9,62 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 "Plugin 'scrooloose/syntastic' "In file syntax checking
-Plugin 'scrooloose/nerdcommenter' "Commenting
-Plugin 'scrooloose/nerdtree' "Filesystem
-Plugin 'valloric/youcompleteme' "Code Completion
-Plugin 'vim-scripts/YankRing.vim' "Add an Emacs-esq Yank Ring
-Plugin 'tpope/vim-fugitive' "Git integration
-Plugin 'airblade/vim-gitgutter' "Git diff
 
-Plugin 'kien/ctrlp.vim' "File search
+Plugin 'scrooloose/nerdcommenter' " Commenting
+Plugin 'scrooloose/nerdtree'      " Filesystem
+Plugin 'jistr/vim-nerdtree-tabs'
 
-Plugin 'fs111/pydoc.vim' "Python pydoc support
-Plugin 'bronson/vim-trailing-whitespace' "Trailing whitespace finder
-Plugin 'jiangmiao/auto-pairs' "Auto close braces
-Plugin 'sheerun/vim-polyglot' "Syntax highlighting
+"Tag bar
+Plugin 'majutsushi/tagbar'
 
-Plugin 'tpope/vim-surround' "Surround for HTML
-Plugin 'majutsushi/tagbar' "Tags
+Plugin 'valloric/youcompleteme'   " Code Completion
+Plugin 'vim-scripts/YankRing.vim' " Add an Emacs-esq Yank Ring
+Plugin 'tpope/vim-fugitive'       " Git integration
+Plugin 'airblade/vim-gitgutter'   " Git diff
 
-Plugin 'flazz/vim-colorschemes' "Color Schemes
-Plugin 'oblitum/rainbow' "Parenthesis colors
-Plugin 'hdima/python-syntax' "Python syntax highlighting
-Plugin 'tmhedberg/SimpylFold' "Code folding help
-Plugin 'vim-scripts/indentpython.vim' "Python indents
-Plugin 'nvie/vim-flake8' "Flake8 checker
+Plugin 'Shougo/vimproc.vim'       " debugger
+Plugin 'idanarye/vim-vebugger'    " debugger
 
-Plugin 'yggdroot/indentline' "Vertical tab lines
-Plugin 'bling/vim-bufferline' "Buffer line
+"Plugin 'vim-scripts/Conque-Shell'
+"Plugin 'vim-scripts/Conque-GDB'
+"Plugin 'joonty/vdebug'
+
+Plugin 'fs111/pydoc.vim'                 " Python pydoc support
+Plugin 'bronson/vim-trailing-whitespace' " Trailing whitespace finder
+Plugin 'jiangmiao/auto-pairs'            " Auto close braces
+Plugin 'sheerun/vim-polyglot'            " Syntax highlighting
+
+Plugin 'tpope/vim-surround'              " Surround for HTML
+
+"Plugin 'kien/rainbow_parentheses.vim'    " Rainbow parenthesis
+Plugin 'flazz/vim-colorschemes'          " Color Schemes
+Plugin 'tmhedberg/SimpylFold'            " Code folding help
+Plugin 'vim-scripts/indentpython.vim'    " Python indents
+Plugin 'nvie/vim-flake8'                 " Flake8 checker
+
+Plugin 'yggdroot/indentline'             " Vertical tab lines
+Plugin 'godlygeek/tabular'               " line up by regex
+Plugin 'bling/vim-bufferline'            " Buffer line
 
 "Snippits
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
+
+"Repeat command
+Plugin 'tpope/vim-repeat'
+
+"Org Mode
+"Plugin 'ceb/vim-orgmode'
+
+"Fuzzy file search
+Plugin 'ctrlpvim/ctrlp.vim'
+
+"Airline
+Plugin 'vim-airline/vim-airline'
+
+"Multiple Cursors
+Plugin 'terryma/vim-multiple-cursors'
 
 
 
@@ -72,6 +97,10 @@ nnoremap <C-J> <C-W>j
 nnoremap <C-K> <C-W>k
 nnoremap <C-H> <C-W>h
 nnoremap <C-L> <C-W>l
+nnoremap <C-w><C-j> <C-W>J
+nnoremap <C-w><C-K> <C-W>K
+nnoremap <C-w><C-H> <C-W>H
+nnoremap <C-w><C-L> <C-W>L
 "Buffer movement
 nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprevious<CR>
@@ -125,14 +154,33 @@ if has("cscope")
     "   'd'   called: find functions that function under cursor calls
     "
 
-    nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
-    nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-    nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
-    nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+    nnoremap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+    nnoremap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+
+    nnoremap <C-@>s :scs find s <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-@>g :scs find g <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-@>c :scs find c <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-@>t :scs find t <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-@>e :scs find e <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-@>f :scs find f <C-R>=expand("<cfile>")<CR><CR>
+    nnoremap <C-@>i :scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+    nnoremap <C-@>d :scs find d <C-R>=expand("<cword>")<CR><CR>
+
+    nnoremap <C-@><C-@>s :vert scs find s <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-@><C-@>g :vert scs find g <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-@><C-@>c :vert scs find c <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-@><C-@>t :vert scs find t <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-@><C-@>e :vert scs find e <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-@><C-@>f :vert scs find f <C-R>=expand("<cfile>")<CR><CR>
+    nnoremap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+    nnoremap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
+
 endif
 
 set ignorecase
@@ -144,8 +192,6 @@ let maplocalleader="\\"
 set background=dark
 nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>ev :vsplit $MYVIMRC<cr>
-nnoremap = :m+1<CR>
-nnoremap - :m-2<CR>
 inoremap <c-u> <esc>bveU<esc>i
 nnoremap <Leader><C-]> <C-w><C-]><C-w>T
 iabbrev @@ zgleason94@gmail.com
@@ -187,16 +233,18 @@ let g:bufferline_echo = 0
 "Fix backspace
 set backspace=indent,eol,start
 
+"Keep lines at bottom under cursor
+set scrolloff=10
+
 "Disable polyglot for python
 let g:polyglot_disabled = ['python']
 
-"Rainbow Parenthesis
-let g:rainbow_active = 1
-"let g:rainbow_guifgs = ['DarkOrange3', 'DarkOrchid3', 'FireBrick']
-"let g:rainbow_ctermfgs = ['lightblue', 'lightgreen', 'yellow', 'red', 'magenta']
-
 "NerdTree
 map <leader>t :NERDTreeToggle<CR>
+map <leader>n <plug>NERDTreeTabsToggle<CR>
+
+"Tagbar
+nmap <leader>b :TagbarToggle<CR>
 
 "Virtualenv support
 py << EOF
@@ -248,3 +296,41 @@ nmap [h <Plug>GitGutterPrevHunk
 nmap <Leader>ha <Plug>GitGutterStageHunk
 nmap <Leader>hr mz<Plug>GitGutterUndoHunk'z5k5<C-y>
 
+"vebugger
+let g:vebugger_leader='<leader>d'
+nmap <leader>ds :VBGstepIn<CR>
+nmap <leader>dn :VBGstepOver<CR>
+nmap <leader>do :VBGstepOut<CR>
+nmap <leader>dc :VBGcontinue<CR>
+nmap <leader>de :VBGevalWordUnderCursor<CR>
+nmap <leader>db :VBGtoggleBreakpointThisLine<CR>
+nmap <leader>dg :VBGstartGDB 
+nmap <leader>dt :VBGtoggleTerminalBuffer<CR><C-K><C-w><C-l>
+nmap <leader>dw :VBGrawWrite 
+
+let g:ConqueTerm_Color = 2         " 1: strip color after 200 lines, 2: always with color
+let g:ConqueTerm_CloseOnEnd = 1    " close conque when program ends running
+let g:ConqueTerm_StartMessages = 0 " display warning messages if conqueTerm is configured incorrectly
+
+
+"Repeat command
+nnoremap , @@
+
+"Global save session and restore session
+  "save and close all files and save global session
+nnoremap <leader>q :mksession! ~/.vim/Session.vim<CR>:wqa<CR>
+  "close all files without saving and save global session
+nnoremap <leader>www :mksession! ~/.vim/Session.vim<CR>:qa!<CR>
+
+function! RestoreSession()
+  if argc() == 0 "vim called without arguments
+    execute 'source ~/.vim/Session.vim'
+  end
+endfunction
+autocmd VimEnter * call RestoreSession()
+
+"Airline
+let g:airline#extensions#tabline#enabled = 1
+
+"Open header or cpp file
+nnoremap <leader>h :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
