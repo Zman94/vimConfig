@@ -85,6 +85,9 @@ filetype plugin indent on    " required
 "
 "
 
+"Reload file
+set autoread
+
 "Folding
 set foldmethod=indent
 set foldlevel=99
@@ -271,6 +274,9 @@ let g:ycm_server_use_vim_stdout = 0
 
 "Mouse
 set mouse=a
+
+"Clipboard
+set clipboard=unnamed
 
 "fugitive git bindings
 nnoremap <leader>ga :Git add %:p<CR><CR>
