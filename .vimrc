@@ -1,6 +1,6 @@
 " vim:set et sw=2
 set nocompatible              " be iMproved, required
-filetype off                  " required
+filetype on                  " required
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -8,7 +8,7 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
-"Plugin 'scrooloose/syntastic' "In file syntax checking
+Plugin 'scrooloose/syntastic' "In file syntax checking
 
 Plugin 'scrooloose/nerdcommenter' " Commenting
 Plugin 'scrooloose/nerdtree'      " Filesystem
@@ -66,6 +66,8 @@ Plugin 'vim-airline/vim-airline'
 "Multiple Cursors
 Plugin 'terryma/vim-multiple-cursors'
 
+"Javascript
+Plugin 'pangloss/vim-javascript'
 
 
 " All of your Plugins must be added before the following line
@@ -104,12 +106,18 @@ nnoremap <C-w><C-j> <C-W>J
 nnoremap <C-w><C-K> <C-W>K
 nnoremap <C-w><C-H> <C-W>H
 nnoremap <C-w><C-L> <C-W>L
+nnoremap <leader>ws <C-W>S
+nnoremap <leader>wv <C-W>v
+
+set splitbelow
+set splitright
 "Buffer movement
 nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprevious<CR>
 "Tag movement
 nnoremap <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 nnoremap <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+nnoremap te :tabedit 
 
 "set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
 filetype plugin indent on
@@ -194,7 +202,7 @@ set number
 let maplocalleader="\\"
 set background=dark
 nnoremap <leader>sv :source $MYVIMRC<cr>
-nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>ev :tabedit $MYVIMRC<cr>
 inoremap <c-u> <esc>bveU<esc>i
 nnoremap <Leader><C-]> <C-w><C-]><C-w>T
 iabbrev @@ zgleason94@gmail.com
@@ -225,7 +233,10 @@ set wildmenu
 
 "YouCompleteMe
 let g:ycm_autoclose_preview_window_after_completion=1
+let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
+let g:ycm_server_use_vim_stdout = 0
 map <leader>j  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+set shortmess+=c
 
 "Indent Line
 let g:indentLine_char = '┆'
@@ -250,14 +261,14 @@ map <leader>n <plug>NERDTreeTabsToggle<CR>
 nmap <leader>b :TagbarToggle<CR>
 
 "Virtualenv support
-py << EOF
-import os
-import sys
-if 'VIRTUAL_ENV' in os.environ:
-  project_base_dir = os.environ['VIRTUAL_ENV']
-  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-  execfile(activate_this, dict(__file__=activate_this))
-EOF
+"py << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+  "project_base_dir = os.environ['VIRTUAL_ENV']
+  "activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+  "execfile(activate_this, dict(__file__=activate_this))
+"EOF
 
 "Flake8
 autocmd FileType python map <buffer> <C-;> :call Flake8()<CR>
@@ -265,12 +276,6 @@ autocmd FileType python map <buffer> <C-;> :call Flake8()<CR>
 "CTRLP
 let g:ctrlp_map = '<c-o>'
 let g:ctrlp_cmd = 'CtrlP'
-
-"YouCompleteMe
-let g:ycm_server_python_interpreter = 'python'
-set shortmess+=c
-let g:ycm_path_to_python_interpreter = '/usr/bin/python2.7'
-let g:ycm_server_use_vim_stdout = 0
 
 "Mouse
 set mouse=a
@@ -288,12 +293,11 @@ nnoremap <leader>ge :Gedit<CR>
 nnoremap <leader>gr :Gread<CR>
 nnoremap <leader>gw :Gwrite<CR><CR>
 nnoremap <leader>gl :silent! Glog<CR>:bot copen<CR>
-nnoremap <leader>gp :Ggrep<Space>
 nnoremap <leader>gm :Gmove<Space>
 nnoremap <leader>gb :Git branch<Space>
 nnoremap <leader>go :Git checkout<Space>
-nnoremap <leader>gps :Dispatch! git push<CR>
-nnoremap <leader>gpl :Dispatch! git pull<CR>
+nnoremap <leader>gps :Gpush<CR>
+nnoremap <leader>gp :Gpull<CR>
 
 "git gutter bindings
 nmap ]h <Plug>GitGutterNextHunk
@@ -340,3 +344,15 @@ let g:airline#extensions#tabline#enabled = 1
 
 "Open header or cpp file
 nnoremap <leader>h :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+
+"Syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_python_flake8_exe = 'python3 -m flake8'
