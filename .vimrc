@@ -8,16 +8,17 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'scrooloose/syntastic' "In file syntax checking
+"Plugin 'scrooloose/syntastic' "In file syntax checking
 
 Plugin 'scrooloose/nerdcommenter' " Commenting
 Plugin 'scrooloose/nerdtree'      " Filesystem
-Plugin 'jistr/vim-nerdtree-tabs'
+"Plugin 'jistr/vim-nerdtree-tabs'
 
 "Tag bar
 Plugin 'majutsushi/tagbar'
 
-Plugin 'valloric/youcompleteme'   " Code Completion
+"Plugin 'valloric/youcompleteme'   " Code Completion
+Plugin 'davidhalter/jedi-vim'     " Code Completion
 Plugin 'vim-scripts/YankRing.vim' " Add an Emacs-esq Yank Ring
 Plugin 'tpope/vim-fugitive'       " Git integration
 Plugin 'airblade/vim-gitgutter'   " Git diff
@@ -40,7 +41,6 @@ Plugin 'tpope/vim-surround'              " Surround for HTML
 Plugin 'flazz/vim-colorschemes'          " Color Schemes
 Plugin 'tmhedberg/SimpylFold'            " Code folding help
 Plugin 'vim-scripts/indentpython.vim'    " Python indents
-Plugin 'nvie/vim-flake8'                 " Flake8 checker
 
 Plugin 'yggdroot/indentline'             " Vertical tab lines
 Plugin 'godlygeek/tabular'               " line up by regex
@@ -69,6 +69,25 @@ Plugin 'terryma/vim-multiple-cursors'
 "Javascript
 Plugin 'pangloss/vim-javascript'
 
+"Minimap
+Plugin 'severin-lemaignan/vim-minimap'
+
+"X/Y on a search
+Plugin 'google/vim-searchindex'
+
+"Style Guides
+"Plugin 'google/styleguide'
+" Add maktaba and codefmt to the runtimepath.
+" (The latter must be installed before it can be used.)
+Plugin 'google/vim-maktaba'
+Plugin 'google/vim-codefmt'
+" Also add Glaive, which is used to configure codefmt's maktaba flags. See
+" `:help :Glaive` for usage.
+"Plugin 'google/vim-glaive'
+
+
+
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -86,6 +105,7 @@ filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
 "
 "
+"call glaive#Install()
 
 "Reload file
 set autoread
@@ -203,6 +223,9 @@ let maplocalleader="\\"
 set background=dark
 nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>ev :tabedit $MYVIMRC<cr>
+nnoremap <leader>pi :PluginInstall<cr>
+nnoremap <leader>pc :PluginClean<cr>
+nnoremap <leader>pu :PluginUpdate<cr>
 inoremap <c-u> <esc>bveU<esc>i
 nnoremap <Leader><C-]> <C-w><C-]><C-w>T
 iabbrev @@ zgleason94@gmail.com
@@ -212,7 +235,7 @@ syntax enable
 colorscheme Tomorrow-Night-Eighties
 "colorscheme Zenburn
 filetype plugin on
-"autocmd BufNewFile,BufRead *.py set ft=python
+autocmd BufNewFile,BufRead *.py set ft=python
 
 "Search into sub folders
 "Display all matching files when we tab complete
@@ -233,7 +256,7 @@ set wildmenu
 
 "YouCompleteMe
 let g:ycm_autoclose_preview_window_after_completion=1
-let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
+let g:ycm_server_python_interpreter = '/usr/local/bin/python3.6'
 let g:ycm_server_use_vim_stdout = 0
 map <leader>j  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 set shortmess+=c
@@ -252,6 +275,9 @@ set scrolloff=10
 
 "Disable polyglot for python
 let g:polyglot_disabled = ['python']
+"Disable polyglot for graphql
+let g:polyglot_disabled = ['graphql']
+let g:graphql_javascript_tags = []
 
 "NerdTree
 map <leader>t :NERDTreeToggle<CR>
@@ -269,9 +295,6 @@ nmap <leader>b :TagbarToggle<CR>
   "activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
   "execfile(activate_this, dict(__file__=activate_this))
 "EOF
-
-"Flake8
-autocmd FileType python map <buffer> <C-;> :call Flake8()<CR>
 
 "CTRLP
 let g:ctrlp_map = '<c-o>'
@@ -314,9 +337,9 @@ nmap <leader>do :VBGstepOut<CR>
 nmap <leader>dc :VBGcontinue<CR>
 nmap <leader>de :VBGevalWordUnderCursor<CR>
 nmap <leader>db :VBGtoggleBreakpointThisLine<CR>
-nmap <leader>dg :VBGstartGDB 
+nmap <leader>dg :VBGstartGDB
 nmap <leader>dt :VBGtoggleTerminalBuffer<CR><C-K><C-w><C-l>
-nmap <leader>dw :VBGrawWrite 
+nmap <leader>dw :VBGrawWrite
 
 let g:ConqueTerm_Color = 2         " 1: strip color after 200 lines, 2: always with color
 let g:ConqueTerm_CloseOnEnd = 1    " close conque when program ends running
@@ -346,13 +369,24 @@ let g:airline#extensions#tabline#enabled = 1
 nnoremap <leader>h :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 
 "Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
 
-let g:syntastic_python_flake8_exe = 'python3 -m flake8'
+"Auto Formatting
+augroup autoformat_settings
+  autocmd FileType bzl AutoFormatBuffer buildifier
+  autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
+  autocmd FileType dart AutoFormatBuffer dartfmt
+  autocmd FileType go AutoFormatBuffer gofmt
+  autocmd FileType gn AutoFormatBuffer gn
+  autocmd FileType html,css,json AutoFormatBuffer js-beautify
+  autocmd FileType java AutoFormatBuffer google-java-format
+  autocmd FileType python AutoFormatBuffer autopep8
+augroup END
+
