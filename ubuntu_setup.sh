@@ -51,3 +51,7 @@ git config --global alias.co checkout
 git config --global alias.st status
 git config --global alias.ci commit
 git config --global alias.br branch
+
+curl -L https://bit.ly/janus-bootstrap | bash
+cp -r .janus ~/.janus
+cp .vimrc.after ~/.vimrc.after

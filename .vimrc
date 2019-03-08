@@ -17,8 +17,8 @@ Plugin 'scrooloose/nerdtree'      " Filesystem
 "Tag bar
 Plugin 'majutsushi/tagbar'
 
-"Plugin 'valloric/youcompleteme'   " Code Completion
-Plugin 'davidhalter/jedi-vim'     " Code Completion
+Plugin 'valloric/youcompleteme'   " Code Completion
+"Plugin 'davidhalter/jedi-vim'     " Code Completion
 Plugin 'vim-scripts/YankRing.vim' " Add an Emacs-esq Yank Ring
 Plugin 'tpope/vim-fugitive'       " Git integration
 Plugin 'airblade/vim-gitgutter'   " Git diff
@@ -31,46 +31,50 @@ Plugin 'idanarye/vim-vebugger'    " debugger
 "Plugin 'joonty/vdebug'
 
 Plugin 'fs111/pydoc.vim'                 " Python pydoc support
-Plugin 'bronson/vim-trailing-whitespace' " Trailing whitespace finder
-Plugin 'jiangmiao/auto-pairs'            " Auto close braces
+Plugin 'bronson/vim-trailing-whitespace' " Trailing whitespace finder :FixWhitespace
+Plugin 'jiangmiao/auto-pairs'            " Auto close braces, apostrophe, etc
 Plugin 'sheerun/vim-polyglot'            " Syntax highlighting
 
 Plugin 'tpope/vim-surround'              " Surround for HTML
 
-"Plugin 'kien/rainbow_parentheses.vim'    " Rainbow parenthesis
+"Plugin 'kien/rainbow_parentheses.vim'    " Rainbow parenthesis. Parenthesis
+"are too hard to see
 Plugin 'flazz/vim-colorschemes'          " Color Schemes
 Plugin 'tmhedberg/SimpylFold'            " Code folding help
 Plugin 'vim-scripts/indentpython.vim'    " Python indents
 
 Plugin 'yggdroot/indentline'             " Vertical tab lines
-Plugin 'godlygeek/tabular'               " line up by regex
+Plugin 'godlygeek/tabular'               " line up by regex :Tabularize <regex>
 Plugin 'bling/vim-bufferline'            " Buffer line
 
-"Snippits
+"Snippits. Learn to use more. Ex fo<Enter> expands to simple for loop
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 
-"Repeat command
+"Repeat command <.> repeats just about everything
 Plugin 'tpope/vim-repeat'
 
 "Org Mode
 "Plugin 'ceb/vim-orgmode'
 
-"Fuzzy file search
+"Fuzzy file search. I don't use fuzzy find much
 Plugin 'ctrlpvim/ctrlp.vim'
 
 "Airline
 Plugin 'vim-airline/vim-airline'
 
-"Multiple Cursors
+"Multiple Cursors. <ctrl-n> over word
 Plugin 'terryma/vim-multiple-cursors'
+
+"Project search. Replaces grep
+Plugin 'mileszs/ack.vim'
 
 "Javascript
 Plugin 'pangloss/vim-javascript'
 
-"Minimap
-Plugin 'severin-lemaignan/vim-minimap'
+"Minimap. Sublime style minimap on the right
+"Plugin 'severin-lemaignan/vim-minimap'
 
 "X/Y on a search
 Plugin 'google/vim-searchindex'
@@ -85,8 +89,31 @@ Plugin 'google/vim-codefmt'
 " `:help :Glaive` for usage.
 "Plugin 'google/vim-glaive'
 
+"Javascript formatting
+Plugin 'maksimr/vim-jsbeautify'
 
+Plugin 'hdima/python-syntax'
 
+"Insert auto complete
+Plugin 'ervandew/supertab'
+
+"Individual scratch buffer on selected region
+Plugin 'chrisbra/NrrwRgn'
+
+"Json highlighting
+Plugin 'elzr/vim-json'
+
+"Lots of vim go stuff
+Plugin 'fatih/vim-go'
+
+"Soft editing for vim
+"Plugin 'vim-pencil'
+"Lightweight snippet tool
+"Plugin 'joereynolds/vim-minisnip'
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'lepture/vim-jinja'
+
+Plugin 'martinda/Jenkinsfile-vim-syntax'
 
 
 " All of your Plugins must be added before the following line
@@ -110,11 +137,17 @@ filetype plugin indent on    " required
 "Reload file
 set autoread
 
-"Folding
+"Code Folding <space>
 set foldmethod=indent
 set foldlevel=99
 nnoremap <space> za
-"Tab Movement
+
+" Tabs are like chrome tabs
+" Buffers are in the background and keep all open files
+" Windows split the current tab in parts
+
+"Tab Movement. new tab te
+nnoremap te :tabedit 
 nnoremap <C-Left> :tabprevious<CR>
 nnoremap <C-Right> :tabnext<CR>
 "Window Movement
@@ -134,11 +167,13 @@ set splitright
 "Buffer movement
 nnoremap <Tab> :bnext<CR>
 nnoremap <S-Tab> :bprevious<CR>
-"Tag movement
+"Tag movement. Find code source
 nnoremap <C-\> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 nnoremap <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
-nnoremap te :tabedit 
 
+" TAB STUFF
+" tabs populate with 4 spaces. Change the following to set the number of
+" spaces you want inserted
 "set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
 filetype plugin indent on
 " show existing tab with 4 spaces width
@@ -148,6 +183,7 @@ set shiftwidth=4
 " On pressing tab, insert 4 spaces
 set expandtab
 
+" More tab stuff
 " New tab
 nnoremap <leader>gn :tabedit<cr>
 nnoremap gn :tab sball<cr>
@@ -214,13 +250,14 @@ if has("cscope")
 
 endif
 
-set ignorecase
+set ignorecase "search without case
 set nocompatible
 set hlsearch
-set colorcolumn=100
-set number
+set colorcolumn=100 "line at 100 characters
+set number "numbers on left
 let maplocalleader="\\"
 set background=dark
+"Updating vimrc key shortcuts
 nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>ev :tabedit $MYVIMRC<cr>
 nnoremap <leader>pi :PluginInstall<cr>
@@ -228,12 +265,13 @@ nnoremap <leader>pc :PluginClean<cr>
 nnoremap <leader>pu :PluginUpdate<cr>
 inoremap <c-u> <esc>bveU<esc>i
 nnoremap <Leader><C-]> <C-w><C-]><C-w>T
+"abbreviations
 iabbrev @@ zgleason94@gmail.com
-iabbrev ccop Copyright 2017 Zach Gleason, all rights reservedv
+iabbrev ccop Copyright 2017 Zach Gleason, all rights reserved
 iabbrev ffor for(int i = 0; i < counter; i++)
 syntax enable
+"colorscheme
 colorscheme Tomorrow-Night-Eighties
-"colorscheme Zenburn
 filetype plugin on
 autocmd BufNewFile,BufRead *.py set ft=python
 
@@ -254,9 +292,9 @@ set wildmenu
 "let g:syntastic_check_on_open = 1
 "let g:syntastic_check_on_wq = 0
 
-"YouCompleteMe
+"YouCompleteMe. Autocomplete
 let g:ycm_autoclose_preview_window_after_completion=1
-let g:ycm_server_python_interpreter = '/usr/local/bin/python3.6'
+let g:ycm_server_python_interpreter = '/usr/local/bin/python2.7'
 let g:ycm_server_use_vim_stdout = 0
 map <leader>j  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 set shortmess+=c
@@ -279,11 +317,11 @@ let g:polyglot_disabled = ['python']
 let g:polyglot_disabled = ['graphql']
 let g:graphql_javascript_tags = []
 
-"NerdTree
+"NerdTree. File navigator
 map <leader>t :NERDTreeToggle<CR>
 map <leader>n <plug>NERDTreeTabsToggle<CR>
 
-"Tagbar
+"Tagbar. Variable tags of file on right
 nmap <leader>b :TagbarToggle<CR>
 
 "Virtualenv support
@@ -300,13 +338,13 @@ nmap <leader>b :TagbarToggle<CR>
 let g:ctrlp_map = '<c-o>'
 let g:ctrlp_cmd = 'CtrlP'
 
-"Mouse
+"Mouse. Mouse clicks in vim
 set mouse=a
 
-"Clipboard
+"Clipboard. Share copy/paste with computer
 set clipboard=unnamed
 
-"fugitive git bindings
+"fugitive git bindings. Git integration
 nnoremap <leader>ga :Git add %:p<CR><CR>
 nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gc :Gcommit -v -q<CR>
@@ -346,7 +384,7 @@ let g:ConqueTerm_CloseOnEnd = 1    " close conque when program ends running
 let g:ConqueTerm_StartMessages = 0 " display warning messages if conqueTerm is configured incorrectly
 
 
-"Repeat command
+"Repeat command. Comma repeats
 nnoremap , @@
 
 "Global save session and restore session
@@ -362,7 +400,7 @@ function! RestoreSession()
 endfunction
 autocmd VimEnter * call RestoreSession()
 
-"Airline
+"Airline. Status bar
 let g:airline#extensions#tabline#enabled = 1
 
 "Open header or cpp file
@@ -382,11 +420,34 @@ nnoremap <leader>h :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 augroup autoformat_settings
   autocmd FileType bzl AutoFormatBuffer buildifier
   autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
+  autocmd FileType c,cpp,proto AutoFormatBuffer clang-format
   autocmd FileType dart AutoFormatBuffer dartfmt
   autocmd FileType go AutoFormatBuffer gofmt
   autocmd FileType gn AutoFormatBuffer gn
-  autocmd FileType html,css,json AutoFormatBuffer js-beautify
+  autocmd FileType css,json AutoFormatBuffer js-beautify
   autocmd FileType java AutoFormatBuffer google-java-format
   autocmd FileType python AutoFormatBuffer autopep8
 augroup END
+
+"Project searching
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+
+"Yankring
+set macmeta
+
+""=====Janus fixes=====
+""Preserve column
+"set nostartofline
+
+""Vim surround
+"vmap S <Plug>VSurround
+"xmap S <Plug>VSurround
+
+""nerd comment
+"let g:NERDDefaultAlign = 'left'
+
+"Insert cwd in command prompt
+cnoremap <C-p> <C-R>=getcwd()<CR>
 
