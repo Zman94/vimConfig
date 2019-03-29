@@ -1,12 +1,13 @@
-" vim:set et sw=2
-set nocompatible              " be iMproved, required
-filetype on                  " required
+set nocompatible
+filetype off
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
+Plugin 'hashivim/vim-terraform'
+Plugin 'juliosueiras/vim-terraform-completion'
 
 "Plugin 'scrooloose/syntastic' "In file syntax checking
 
@@ -23,8 +24,11 @@ Plugin 'vim-scripts/YankRing.vim' " Add an Emacs-esq Yank Ring
 Plugin 'tpope/vim-fugitive'       " Git integration
 Plugin 'airblade/vim-gitgutter'   " Git diff
 
-Plugin 'Shougo/vimproc.vim'       " debugger
-Plugin 'idanarye/vim-vebugger'    " debugger
+"Align
+Plugin 'junegunn/vim-easy-align'
+
+"Plugin 'Shougo/vimproc.vim'       " debugger
+"Plugin 'idanarye/vim-vebugger'    " debugger
 
 "Plugin 'vim-scripts/Conque-Shell'
 "Plugin 'vim-scripts/Conque-GDB'
@@ -33,7 +37,7 @@ Plugin 'idanarye/vim-vebugger'    " debugger
 Plugin 'fs111/pydoc.vim'                 " Python pydoc support
 Plugin 'bronson/vim-trailing-whitespace' " Trailing whitespace finder :FixWhitespace
 Plugin 'jiangmiao/auto-pairs'            " Auto close braces, apostrophe, etc
-Plugin 'sheerun/vim-polyglot'            " Syntax highlighting
+Plugin 'sheerun/vim-polyglot'            " Syntax highlighting (markdown too)
 
 Plugin 'tpope/vim-surround'              " Surround for HTML
 
@@ -68,7 +72,61 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'terryma/vim-multiple-cursors'
 
 "Project search. Replaces grep
-Plugin 'mileszs/ack.vim'
+Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plugin 'junegunn/fzf.vim'
+
+"
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
+"fzf bindings
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+" Augmenting Rg command using fzf#vim#with_preview function
+"   * fzf#vim#with_preview([[options], preview window, [toggle keys...]])
+"     * For syntax-highlighting, Ruby and any of the following tools are required:
+"       - Highlight: http://www.andre-simon.de/doku/highlight/en/highlight.php
+"       - CodeRay: http://coderay.rubychan.de/
+"       - Rouge: https://github.com/jneen/rouge
+"
+"   :Rg  - Start fzf with hidden preview window that can be enabled with "?" key
+"   :Rg! - Start fzf in fullscreen and display the preview window above
+command! -bang -nargs=* Ag
+  \ call fzf#vim#ag(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
+" same as above, but for Files command
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>,
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
+inoremap <expr> <c-x><c-l> fzf#vim#complete(fzf#wrap({
+  \ 'prefix': '^.*$',
+  \ 'source': 'rg -n ^ --color always',
+  \ 'options': '--ansi --delimiter : --nth 3..',
+  \ 'reducer': { lines -> join(split(lines[0], ':\zs')[2:], '') }}))
+"fzf commands
+nnoremap <silent> <leader>/ :Files<CR>
+nnoremap <silent> <leader>a :Buffers<CR>
+nnoremap <silent> <leader>; :BLines<CR>
+nnoremap <silent> <leader>? :History<CR>
+nnoremap <silent> <leader>f :execute 'Ag ' . input('Ag/')<CR>
 
 "Javascript
 Plugin 'pangloss/vim-javascript'
@@ -87,10 +145,6 @@ Plugin 'google/vim-maktaba'
 Plugin 'google/vim-codefmt'
 " Also add Glaive, which is used to configure codefmt's maktaba flags. See
 " `:help :Glaive` for usage.
-"Plugin 'google/vim-glaive'
-
-"Javascript formatting
-Plugin 'maksimr/vim-jsbeautify'
 
 Plugin 'hdima/python-syntax'
 
@@ -106,32 +160,34 @@ Plugin 'elzr/vim-json'
 "Lots of vim go stuff
 Plugin 'fatih/vim-go'
 
-"Soft editing for vim
-"Plugin 'vim-pencil'
-"Lightweight snippet tool
-"Plugin 'joereynolds/vim-minisnip'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'lepture/vim-jinja'
 
 Plugin 'martinda/Jenkinsfile-vim-syntax'
 
+"Linter and hover maybe
+Plugin 'w0rp/ale'
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
-"
-"
+"emojis
+Plugin 'junegunn/vim-emoji'
+
+"Unix commands in vim
+Plugin 'tpope/vim-eunuch'
+
+"Editorconfig files
+Plugin 'editorconfig/editorconfig-vim'
+
+"Vim registers
+Plugin 'junegunn/vim-peekaboo'
+
+"Bulleted lists
+Plugin 'dkarter/bullets.vim'
+
+" Plugin End
+
+call vundle#end()
+filetype plugin indent on
+
 "call glaive#Install()
 
 "Reload file
@@ -257,14 +313,7 @@ set colorcolumn=100 "line at 100 characters
 set number "numbers on left
 let maplocalleader="\\"
 set background=dark
-"Updating vimrc key shortcuts
-nnoremap <leader>sv :source $MYVIMRC<cr>
-nnoremap <leader>ev :tabedit $MYVIMRC<cr>
-nnoremap <leader>pi :PluginInstall<cr>
-nnoremap <leader>pc :PluginClean<cr>
-nnoremap <leader>pu :PluginUpdate<cr>
-inoremap <c-u> <esc>bveU<esc>i
-nnoremap <Leader><C-]> <C-w><C-]><C-w>T
+
 "abbreviations
 iabbrev @@ zgleason94@gmail.com
 iabbrev ccop Copyright 2017 Zach Gleason, all rights reserved
@@ -318,8 +367,8 @@ let g:polyglot_disabled = ['graphql']
 let g:graphql_javascript_tags = []
 
 "NerdTree. File navigator
-map <leader>t :NERDTreeToggle<CR>
-map <leader>n <plug>NERDTreeTabsToggle<CR>
+map <leader>n :NERDTreeToggle<CR>
+"map <leader>n <plug>NERDTreeTabsToggle<CR>
 
 "Tagbar. Variable tags of file on right
 nmap <leader>b :TagbarToggle<CR>
@@ -418,14 +467,14 @@ nnoremap <leader>h :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 
 "Auto Formatting
 augroup autoformat_settings
-  autocmd FileType bzl AutoFormatBuffer buildifier
-  autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
-  autocmd FileType c,cpp,proto AutoFormatBuffer clang-format
-  autocmd FileType dart AutoFormatBuffer dartfmt
-  autocmd FileType go AutoFormatBuffer gofmt
-  autocmd FileType gn AutoFormatBuffer gn
-  autocmd FileType css,json AutoFormatBuffer js-beautify
-  autocmd FileType java AutoFormatBuffer google-java-format
+  "autocmd FileType bzl AutoFormatBuffer buildifier
+  "autocmd FileType c,cpp,proto,javascript AutoFormatBuffer clang-format
+  "autocmd FileType c,cpp,proto AutoFormatBuffer clang-format
+  "autocmd FileType dart AutoFormatBuffer dartfmt
+  "autocmd FileType go AutoFormatBuffer gofmt
+  "autocmd FileType gn AutoFormatBuffer gn
+  "autocmd FileType css,json AutoFormatBuffer js-beautify
+  "autocmd FileType java AutoFormatBuffer google-java-format
   autocmd FileType python AutoFormatBuffer autopep8
 augroup END
 
@@ -433,9 +482,6 @@ augroup END
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
-
-"Yankring
-set macmeta
 
 ""=====Janus fixes=====
 ""Preserve column
@@ -451,3 +497,43 @@ set macmeta
 "Insert cwd in command prompt
 cnoremap <C-p> <C-R>=getcwd()<CR>
 
+"Search for highlighted phrase
+vnoremap * "ny/\V<C-R>=escape(@",'/\')<CR>n<CR>
+
+"ale emojis
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '⚠'
+"If too slow
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_enter = 0
+
+"fzf commands
+nnoremap <silent> <leader><space> :Files<CR>
+nnoremap <silent> <leader>a :Buffers<CR>
+nnoremap <silent> <leader>; :BLines<CR>
+nnoremap <silent> <leader>? :History<CR>
+
+"instant markdown
+let g:instant_markdown_autostart = 0
+
+"Terraform plugin
+let g:terraform_align=1
+"let g:terraform_fmt_on_save=1 " Too slow!
+let g:terraform_remap_spacebar=1
+
+nnoremap <leader>ev :tabedit $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
+nnoremap <leader>pc :source $MYVIMRC<cr>:PluginClean<cr>
+nnoremap <leader>pi :source $MYVIMRC<cr>:PluginInstall<cr>
+nnoremap <leader>t :Terraform<cr>
+
+" Bullets.vim
+let g:bullets_enabled_file_types = [
+    \ 'markdown',
+    \ 'text',
+    \ 'gitcommit',
+    \ 'scratch'
+    \]
+
+" polyglot no markdown conceal (may affect json)
+set cole=0

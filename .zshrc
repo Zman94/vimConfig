@@ -1,6 +1,6 @@
-export TERM="xterm-256color"
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH="/usr/local/opt/python/libexec/bin:$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/zach/.oh-my-zsh"
@@ -14,7 +14,14 @@ export EDITOR=vim
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="powerlevel9k/powerlevel9k"
 
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status virtualenv root_indicator background_jobs history time)
+source "/usr/local/opt/kube-ps1/share/kube-ps1.sh"
+prompt_kube_ps1(){
+   echo -n `kube_ps1`
+}
+
+KUBE_PS1_SYMBOL_USE_IMG=true
+
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(kube_ps1 status virtualenv root_indicator background_jobs history time)
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -83,6 +90,7 @@ plugins=(
     #docker-compose
     gitgo
     helm
+    kube-ps1
     kubectl
     minikube
     moleculealiases
@@ -104,6 +112,7 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $HOME/.abbr_pwd
+
 
 # User configuration
 
@@ -183,13 +192,15 @@ alias flux="redshift -t 3700:3700"
 alias ml="cd ~/Projects/cs446/final"
 alias re="cd ~/Projects/Research-SP18"
 #alias python="python3"
-#alias vim="mvim"
 alias kc="kubectl"
 alias kw="kubectl --namespace=wcra"
-alias bxli="bx pr login -u admin -p admin -a https://zachgleason.icp.ibmcsf.net:8443 --skip-ssl-validation -c id-zachgleason-account; bx pr cluster-config zachgleason"
-alias wcrali="bx login --apikey @~/.apikeys/apiKey.json"
-alias wrsli="bx login --apikey @~/.apikeys/apiKey_redsonja.json"
 alias fix="vim -p `git diff --name-only`;"
+alias ssh="sshrc"
+alias build="cd ~/Projects/InstallAndGo/helper_scripts"
+alias tf="terraform"
+alias tf12="terraform12"
+alias brl="cd ~/Projects/berkeley_rl/homework_fall2019"
+alias opdir="cd ~/Projects/operators/ibm-watson-speech-tts-runtime-operator"
 
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
@@ -224,7 +235,6 @@ export GOBIN=$GOPATH/bin
 export PATH=$PATH:$GOBIN
 export CO_NAMESPACE=demo
 export CO_CMD=kubectl
-export COROOT=$GOPATH/src/github.com/crunchydata/postgres-operator
 export CO_IMAGE_PREFIX=crunchydata
 export CO_BASEOS=centos7
 export CO_VERSION=3.4.0
@@ -243,8 +253,17 @@ export CCP_IMAGE_TAG=centos7-10.6-2.2.0
 alias setip='export CO_APISERVER_URL=https://`kubectl get service postgres-operator -o=jsonpath="{.spec.clusterIP}"`:8443'
 alias alog='kubectl logs `kubectl get pod --selector=name=postgres-operator -o jsonpath="{.items[0].metadata.name}"` -c apiserver'
 alias olog='kubectl logs `kubectl get pod --selector=name=postgres-operator -o jsonpath="{.items[0].metadata.name}"` -c operator'
-alias fyre='cd ~/Projects/zen-dev-test-utils/dev-setup/icp/'
+alias ll='ls -l'
+
 ### End ###
 
 autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/local/bin/vault vault
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source /usr/local/opt/autoenv/activate.sh
+
+# Mujoco commands
+export LD_LIBRARY_PATH=~/.mujoco/mjpro150/bin
+
+eval "$(direnv hook zsh)"

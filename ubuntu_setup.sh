@@ -19,27 +19,11 @@ echo 'source ~/.autoenv/activate.sh' >> ~/.bashrc
 #ycm compilation
 sudo apt-get remove vim vim-runtime gvim \
 	vim-tiny vim-common vim-gui-common vim-nox
+sudo apt-get install neovim
+pip install --user --upgrade pynvim
+pip3 install --user --upgrade pynvim
 
 cd ~
-git clone https://github.com/vim/vim.git
-cd vim
-./configure --with-features=huge \
-	--enable-multibyte \
-	--enable-rubyinterp=yes \
-	--enable-pythoninterp=yes \
-	--with-python-config-dir=/usr/lib/python2.7/config \
-	--enable-python3interp=yes \
-	--with-python3-config-dir=/usr/lib/python3.5/config \
-	--enable-perlinterp=yes \
-	--enable-luainterp=yes \
-	--enable-gui=gtk2 --enable-cscope --prefix=/usr
-make VIMRUNTIMEDIR=/usr/share/vim/vim80
-cd ~/vim
-sudo make install
-sudo update-alternatives --install /usr/bin/editor editor /usr/bin/vim 1
-sudo update-alternatives --set editor /usr/bin/vim
-sudo update-alternatives --install /usr/bin/vi vi /usr/bin/vim 1
-sudo update-alternatives --set vi /usr/bin/vim
 
 cd ~/.vim/bundle/YouCompleteMe
 ./install.py --all
@@ -52,6 +36,10 @@ git config --global alias.st status
 git config --global alias.ci commit
 git config --global alias.br branch
 
-curl -L https://bit.ly/janus-bootstrap | bash
-cp -r .janus ~/.janus
-cp .vimrc.after ~/.vimrc.after
+ln .vimrc ~/.vimrc
+
+#oh my zsh
+sudo apt install zsh
+chsh -s $(which zsh)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+ln ./.zshrc ~/.zshrc

@@ -7,9 +7,14 @@ alias volume="alsamixer"
 alias flux="redshift -t 3700:3700"
 alias ml="cd ~/Projects/cs446/final"
 alias re="cd ~/Projects/Research-SP18"
-alias vim="nvim"
+#alias python="python3"
+#alias vim="mvim"
+alias vim="vim"
+alias kc="kubectl"
+alias bxli="bx pr login -u admin -p \"admin\" -a https://zachgleason.icp.ibmcsf.net:8443 --skip-ssl-validation -c id-icp-wa-account; bx pr cluster-config zachgleason"
 
 export PATH=.:$PATH
+export HELM_HOME=/Users/zach/.helm
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="$PATH:."
@@ -18,7 +23,7 @@ export PATH="$PATH:."
 [ -f /Users/Zach/.travis/travis.sh ] && source /Users/Zach/.travis/travis.sh
 
 #####################   .bash_profile   ########################
-export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3.5
+export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 export WORKON_HOME=~/Envs
 
 #source /usr/local/bin/virtualenvwrapper.sh
@@ -81,3 +86,9 @@ source /usr/local/bin/virtualenvwrapper.sh
 export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
 #source ~/.autoenv/activate.sh
+source ~/.autoenv/activate.sh
+
+complete -C /usr/local/bin/vault vault
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+alias ic="ibmcloud"
