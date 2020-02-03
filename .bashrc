@@ -11,7 +11,6 @@ alias re="cd ~/Projects/Research-SP18"
 #alias vim="mvim"
 alias vim="vim"
 alias kc="kubectl"
-alias bxli="bx pr login -u admin -p \"admin\" -a https://zachgleason.icp.ibmcsf.net:8443 --skip-ssl-validation -c id-icp-wa-account; bx pr cluster-config zachgleason"
 
 export PATH=.:$PATH
 export HELM_HOME=/Users/zach/.helm
